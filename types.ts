@@ -13,13 +13,13 @@ export type NinosModel ={
 };
 export type Lugar ={
     nombre:string;
-    coordenadas:boolean;
+    coordenadas:number[];
     ninosBuenos:number;
     id:string;
 };
 export type LugarModel ={
     nombre:string;
-    coordenadas:boolean;
+    coordenadas:number[];
     ninosBuenos:number;
     _id:ObjectId;
 };
