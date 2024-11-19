@@ -42,6 +42,28 @@ const dbName = 'nebrijadb';
         }
         return new Response("Data body not found",{status:400})
       }
+      else if(path === "/ninos"){
+        const ninos = await req.json();
+        if(ninos.nombre && ninos.comportamiento){
+          const nombre =  ninos.nombre;
+          const nino = await ninoscollection.findOne({nombre});
+          const comportamiento = ninos.comportamiento;
+          if(!nino){
+            if(comportamiento){//error aqui
+              const {insertedId } =  await ninoscollection.insertOne({ nombre: ninos.nombre, comportamiento:ninos.comportamiento, ubicacion:ninos.ubicacion});
+            return new Response(JSON.stringify({nombre: ninos.nombre, comportamiento:ninos.comportamiento, ubicacion:ninos.ubicacion,id:insertedId }),{status:201});
+            }   
+            else{
+              return new Response("Coordenadas mal",{status:400})
+
+            }
+          }
+          else{
+            return new Response("El nino ya existe",{status:409})
+          }
+        }
+        return new Response("Data body not found",{status:400})
+      }
     }
     return new Response("No endpoint",{status:404});
   } 
