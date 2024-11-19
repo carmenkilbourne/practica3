@@ -23,7 +23,7 @@ const dbName = 'nebrijadb';
     //         //const nino = await ninoscollection
     //     }
     // }
-    return new Response("No endpoint",{status:404});
+    return new Response("No",{status:404});
 
   } 
   Deno.serve({ port: 6768 }, handler);
