@@ -1,5 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb'
 import { LugarModel, NinosModel } from "./types.ts";
+import { ModelToNino } from "./resolvers.ts";
 
 // Connection URL
 const url = Deno.env.get("MONGO_URL");
@@ -44,19 +45,16 @@ const dbName = 'nebrijadb';
       }
       else if(path === "/ninos"){
         const ninos = await req.json();
-        if(ninos.nombre && ninos.comportamiento){
+        if(ninos.nombre ){
           const nombre =  ninos.nombre;
           const nino = await ninoscollection.findOne({nombre});
           const comportamiento = ninos.comportamiento;
           if(!nino){
-            if(comportamiento){//error aqui
+            if(typeof comportamiento === "boolean" ){//error aqui
               const {insertedId } =  await ninoscollection.insertOne({ nombre: ninos.nombre, comportamiento:ninos.comportamiento, ubicacion:ninos.ubicacion});
             return new Response(JSON.stringify({nombre: ninos.nombre, comportamiento:ninos.comportamiento, ubicacion:ninos.ubicacion,id:insertedId }),{status:201});
             }   
-            else{
-              return new Response("Coordenadas mal",{status:400})
-
-            }
+           
           }
           else{
             return new Response("El nino ya existe",{status:409})
@@ -64,6 +62,24 @@ const dbName = 'nebrijadb';
         }
         return new Response("Data body not found",{status:400})
       }
+    }
+    else if(method === "GET"){
+      if(path === "/ninos/malos"){ //hay que hacer condicion por si no existe ningun false
+        const ninosMalossdb = await ninoscollection.find({comportamiento:false}).toArray();
+        const ninosMalos = await Promise.all(
+        ninosMalossdb.map((n) =>ModelToNino(lugarcollection,n)));
+        return new Response(JSON.stringify(ninosMalos),{status:200});
+      }
+      if(path === "/ninos/buenos"){ //hay que hacer condicion por si no existe ningun true
+        const ninosBuenosdb = await ninoscollection.find({comportamiento:true}).toArray();
+        const ninosBuenos = await Promise.all(
+        ninosBuenosdb.map((n) =>ModelToNino(lugarcollection,n)));
+        return new Response(JSON.stringify(ninosBuenos),{status:200});
+      }
+    /*   if(path === "/entregas"){
+        const ninosBuenosdb = await ninoscollection.find().toArray();
+
+      } */
     }
     return new Response("No endpoint",{status:404});
   } 
