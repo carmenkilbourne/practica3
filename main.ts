@@ -27,16 +27,16 @@ const dbName = 'nebrijadb';
             const lugar = await lugarcollection.findOne({nombre});
             const coordenadas =  body.coordenadas;
             if(!lugar){
-              if(coordenadas.length=== 2 && coordenadas[0].typeof === "number"){//error aqui
-                const newlugar =  lugarcollection.insertOne({_id: new ObjectId,coordenadas:body.coordenadas,nombre:body.nombre,ninosBuenos:body.ninosBuenos});
-              return new Response(JSON.stringify(newlugar),{status:200});
+              if(coordenadas.length === 2 && coordenadas.every(c => typeof c === "number")){//error aqui
+                const {insertedId } =  await lugarcollection.insertOne({coordenadas:body.coordenadas,nombre:body.nombre,ninosBuenos:body.ninosBuenos});
+              return new Response(JSON.stringify({coordenadas:body.coordenadas,nombre:body.nombre,ninosBuenos:body.ninosBuenos,id:insertedId }),{status:201});
               }   
               else{
                 return new Response("Coordenadas mal",{status:400})
 
               }
             }else{
-              return new Response("ya existe",{status:400})
+              return new Response("ya existe",{status:409})
             }
 
         }
