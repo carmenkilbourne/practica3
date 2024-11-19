@@ -31,9 +31,10 @@ const dbName = 'nebrijadb';
     }else if(method === "POST"){
       if(path === "/ubicacion"){
         const body = await req.json()
-        if(body.nombre && body.coordenadas && body.ninosBuenos){
-
-          if (body.coordenadas.size === 2&& body.coordenadas.typeof === "number"){
+        
+        
+          console.log("paso")
+          if (body.coordenadas.le === 2 && body.coordenadas.typeof === "number"){
             const name = body.nombre;
             const lugar = lugarcollection.find({name});
             if(!lugar){
@@ -44,10 +45,22 @@ const dbName = 'nebrijadb';
             }
           }
 
-        }
+        
         return new Response("Data body not found",{status:400})
       }else if( path === "/ninos"){
-
+        const body = await req.json()
+        if(!body.nombre || !body.comportamiento) return new Response("Faltan datos en el body",{status:400});
+        const comportamiento = body.comportamiento;
+        if(comportamiento!== true && comportamiento!== false) return new Response("Comportamiento no es booleano",{status:400})
+        const nombre = body.nombre;
+        const nino = await ninoscollection.findOne({nombre});
+        if(!nino){
+          const newNino = await ninoscollection.insertOne({_id: new ObjectId,nombre:body.nombre,comportamiento:body.comportamiento,ubicacion:[]});
+          return new Response(JSON.stringify(newNino),{status:200});
+        }else{
+          return new Response("ya existe",{status:400});
+        }
+      
       }
     }
     return new Response("No endpoint",{status:404});
