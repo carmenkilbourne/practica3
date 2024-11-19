@@ -28,7 +28,7 @@ const dbName = 'nebrijadb';
             const coordenadas =  body.coordenadas;
             if(!lugar){
               if(coordenadas.length === 2 && coordenadas.every(c => typeof c === "number")){//error aqui
-                const {insertedId } =  await lugarcollection.insertOne({coordenadas:body.coordenadas,nombre:body.nombre,ninosBuenos:body.ninosBuenos});
+                const {insertedId } =  await lugarcollection.insertOne({coordenadas: body.coordenadas, nombre: body.nombre, ninosBuenos: body.ninosBuenos });
               return new Response(JSON.stringify({coordenadas:body.coordenadas,nombre:body.nombre,ninosBuenos:body.ninosBuenos,id:insertedId }),{status:201});
               }   
               else{
