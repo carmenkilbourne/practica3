@@ -11,43 +11,36 @@ const dbName = 'nebrijadb';
   await client.connect();
   console.log('Conexion exitosa');
   const db = client.db(dbName);
-  const ninoscollection = db.collection<NinosModel>('ninos');
-  const lugarcollection = db.collection<LugarModel>('lugares');
+  const ninoscollection = db.collection<NinosModel>("ninos");
+  const lugarcollection = db.collection<LugarModel>("lugares");
   const handler= async (req:Request): Promise<Response> =>
   {
      const method =req.method;
      const url = new URL(req.url);
      const path = url.pathname;
-     if(method === "/GET"){
-         if(path === "/ninos/buenos"){
-             
-         }else if(path === "/ninos/malos"){
-
-         }else if(path === "/entregas"){
-
-         }else if(path === "/ruta"){
-
-         }
-    }else if(method === "POST"){
+   if(method === "POST"){
       if(path === "/ubicacion"){
-        const body = await req.json()
+        const body = await req.json();
         if(body.nombre && body.coordenadas && body.ninosBuenos){
 
-          if (body.coordenadas.size === 2&& body.coordenadas.typeof === "number"){
-            const name = body.nombre;
-            const lugar = lugarcollection.find({name});
+            const nombre =  body.nombre;
+            const lugar = await lugarcollection.findOne({nombre});
+            const coordenadas =  body.coordenadas;
             if(!lugar){
-              const newlugar = lugarcollection.insertOne({_id: new ObjectId,coordenadas:body.coordenadas,nombre:body.nombre,ninosBuenos:body.ninosBuenos});
+              if(coordenadas.length=== 2 && coordenadas[0].typeof === "number"){//error aqui
+                const newlugar =  lugarcollection.insertOne({_id: new ObjectId,coordenadas:body.coordenadas,nombre:body.nombre,ninosBuenos:body.ninosBuenos});
               return new Response(JSON.stringify(newlugar),{status:200});
+              }   
+              else{
+                return new Response("Coordenadas mal",{status:400})
+
+              }
             }else{
               return new Response("ya existe",{status:400})
             }
-          }
 
         }
         return new Response("Data body not found",{status:400})
-      }else if( path === "/ninos"){
-
       }
     }
     return new Response("No endpoint",{status:404});
