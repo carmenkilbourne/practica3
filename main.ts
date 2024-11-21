@@ -45,7 +45,7 @@ const dbName = 'nebrijadb';
       }
       else if(path === "/ninos"){ //comprobar que la ubicacion existe 
         const ninos = await req.json();
-        if(ninos.nombre && ninos.comportamiento && ninos.ubicacion){
+        if(ninos.nombre && ninos.ubicacion){
           const nombre =  ninos.nombre;
           const nino = await ninoscollection.findOne({nombre});
           const comportamiento = ninos.comportamiento;
