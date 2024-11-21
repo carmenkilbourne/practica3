@@ -1,7 +1,6 @@
 import { Collection } from "mongodb";
 import { Lugar, LugarModel, Ninos, NinosModel } from "./types.ts";
 
-
 export const  ModelToNino = async(
     lugarcollections:Collection<LugarModel>,
     ninosdb:NinosModel
@@ -11,7 +10,7 @@ export const  ModelToNino = async(
         nombre:ninosdb.nombre,
         comportamiento:ninosdb.comportamiento,
         id:ninosdb._id!.toString(),
-        ubicacion:lugares.map((l) => ModelToLugar(l))
+        ubicacion:lugares.map((l) => ModelToLugar(l)),
     };
 };
 
@@ -31,7 +30,6 @@ export const haversine = (lat1: number, lon1: number, lat2: number, lon2: number
     const a = Math.sin(dLat / 2) ** 2 +
          Math.cos(lat1Rad) * Math.cos(lat2Rad) *
          Math.sin(dLon / 2) ** 2;
-  
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distancia en km
   }

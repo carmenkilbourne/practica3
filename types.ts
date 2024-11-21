@@ -12,11 +12,13 @@ export type Lugar ={
     ninosBuenos:number;
     id:string;
 };
+
 export type LugarModel =OptionalId<{
     nombre:string;
     coordenadas:number[];
     ninosBuenos:number;
 }>;
+
 export type NinosModel = OptionalId<{
     nombre:string;
     comportamiento:boolean;
