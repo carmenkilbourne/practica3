@@ -2,12 +2,13 @@ import { MongoClient, ObjectId } from "mongodb";
 import { LugarModel, NinosModel } from "./types.ts";
 import { haversine, ModelToLugar, ModelToNino } from "./resolvers.ts";
 
+const MONGO_URL = "mongodb+srv://ckilbourne:12345@nebrija-cluster.cumaf.mongodb.net/?retryWrites=true&w=majority&appName=Nebrija-Cluster";
 // Connection URL
-const url = Deno.env.get("MONGO_URL");
+/* const url = Deno.env.get("MONGO_URL");
 if (!url) {
-  Deno.exit(1);
-}
-const client = new MongoClient(url);
+  throw new Error("Please provide a MONGO_URL");
+} */
+const client = new MongoClient(MONGO_URL);
 const dbName = "nebrijadb";
 await client.connect();
 console.log("Conexion exitosa");
